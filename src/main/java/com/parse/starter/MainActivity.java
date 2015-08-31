@@ -37,13 +37,13 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-String sender = "michael";
-String receiver = "sara";
+    String sender = "michael";
+    String receiver = "sara";
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_main);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 //      ParseObject testObject = new ParseObject("TestObject");
 //      testObject.put("moooo", "mar");
 //      testObject.saveInBackground();
@@ -51,150 +51,180 @@ String receiver = "sara";
       upload.setOnClickListener(new View.OnClickListener() {
           public void onClick(View arg0) {
 
-              selectImage();
+        selectImage();
+        ParseAnalytics.trackAppOpenedInBackground(getIntent());
           }
       });
-      Button download = (Button) findViewById(R.id.Download);
-      download.setOnClickListener(new View.OnClickListener() {
-          public void onClick(View arg0) {
+        Button download = (Button) findViewById(R.id.Download);
+        download.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
 
-              downloadImages("michael");
-          }
-      });
-      ParseAnalytics.trackAppOpenedInBackground(getIntent());
-  }
+                downloadImages("sara");
+            }
+        });
 
-          public boolean selectImage() {
-              Intent intent = new Intent();
-              intent.setType("image/*");
-              intent.setAction(Intent.ACTION_GET_CONTENT);
-              startActivityForResult(Intent.createChooser(intent, "Select picture to upload "), 10);
-              return true;
-          }
+    }
 
-          public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public boolean selectImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select picture to upload "), 10);
+        return true;
+    }
 
-              if (resultCode == RESULT_OK) {
-                  Uri imageUri = data.getData();
-                  ImageView imView = (ImageView) findViewById(R.id.imView);
-                  imView.setImageURI(imageUri);
-                  try {
-                      Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                      uploadImage(bitmap, receiver);
-                  } catch (IOException e) {
-                      e.printStackTrace();
-                  }
-              }
-          }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+            ImageView imView = (ImageView) findViewById(R.id.imView);
+            imView.setImageURI(imageUri);
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                uploadImage(bitmap, receiver);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
-          /**
-           * Uploads an image to the main table in parse, with field "uploader" and "recipient"
-           * @return
-           */
-          public boolean uploadImage(Bitmap bitmap, String receiverID) {
-              Log.v("tag", "beforeImagePath");
-              ByteArrayOutputStream stream = new ByteArrayOutputStream();
-              // Compress image to lower quality scale 1 - 100
-              bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-              byte[] image = stream.toByteArray();
+    /**
+     * Uploads an image to the main table in parse, with field "uploader" and "recipient"
+     * @return
+     */
+    public boolean uploadImage(Bitmap bitmap, String receiverID) {
+        Log.v("tag", "beforeImagePath");
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // Compress image to lower quality scale 1 - 100
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] image = stream.toByteArray();
 
-              // Create the ParseFile
+        // Create the ParseFile
               ParseFile file = new ParseFile("image.jpeg", image);
               // Upload the image into Parse Cloud
               file.saveInBackground();
 
-              // Create a New Class called "ImageUpload" in Parse
-              ParseObject imgupload = new ParseObject("Image Table");
+        // Create a New Class called "Image Table" in Parse
+        ParseObject imgupload = new ParseObject("ImageTable");
 
-              // Create a column named "Sender ID" and set the string
-              imgupload.put("Sender ID", sender);
+        // Create a column named "Sender ID" and set the string
+        imgupload.put("SenderID", sender);
 
-              // Create a column named "Sender ID" and set the string
-              imgupload.put("Receiver ID", receiverID);
+        // Create a column named "Sender ID" and set the string
+        imgupload.put("ReceiverID", receiverID);
 
-              // Create a column named "ImageFile" and insert the image
+//              // Create a column named "ImageFile" and insert the image
               imgupload.put("ImageFile", file);
+//
+        // Create the class and the columns
+        imgupload.saveInBackground();
 
-              // Create the class and the columns
-              imgupload.saveInBackground();
+        // Show a simple toast message
+        Toast.makeText(MainActivity.this, "Image Uploaded",
+                Toast.LENGTH_SHORT).show();
+        return true;
+    }
 
-              // Show a simple toast message
-              Toast.makeText(MainActivity.this, "Image Uploaded",
-                      Toast.LENGTH_SHORT).show();
-              return true;
-          }
-
-          /**
-           * Uploads an image to the main table in parse, with field "uploader" and "recipient"
-           * @return
-           */
-          public boolean downloadImages(String receiverID) {
-
-
-              // Locate the class table named "ImageUpload" in Parse.com
+    /**
+     * Uploads an image to the main table in parse, with field "uploader" and "recipient"
+     * @return
+     */
+    public boolean downloadImages(String receiverID) {
 
 
-              ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Image Table");
-              query.whereEqualTo("Receiver ID", "sara");
-              // Locate the objectId from the class
-              query.findInBackground(new FindCallback<ParseObject>() {
-                  @Override
-                  public void done(List<ParseObject> objectList, ParseException e) {
-                      // TODO Auto-generated method stub
-                      ParseObject object = objectList.get(0);
-                      // Locate the column named "ImageName" and set
-                      // the string
-                      ParseFile fileObject = (ParseFile) object.get("ImageFile");
-                      fileObject
-                              .getDataInBackground(new GetDataCallback() {
-
-                                  public void done(byte[] data, ParseException e) {
-                                      if (e == null) {
-                                          Log.d("test", "We've got data in data.");
-                                          // Decode the Byte[] into // Bitmap
-                                          Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-
-                                          // Get the ImageView from
-                                          // main.xml
-                                          ImageView image = (ImageView) findViewById(R.id.imDownloadView);
-
-                                          // Set the Bitmap into the
-                                          // ImageView
-                                          image.setImageBitmap(bmp);
-
-                                      } else {
-                                          Log.d("test",
-                                                  "There was a problem downloading the data.");
-                                      }
-                                  }
-                              });
-                  }
-
-              });
-              return true;
-          }
+        // Locate the class table named "ImageUpload" in Parse.com
 
 
-          @Override
-          public boolean onCreateOptionsMenu(Menu menu) {
-              // Inflate the menu; this adds items to the action bar if it is present.
-              getMenuInflater().inflate(R.menu.menu_main, menu);
-              return true;
-          }
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("ImageTable");
+        query.whereEqualTo("ReceiverID", "sara");
+        // Locate the objectId from the class
 
-          @Override
-          public boolean onOptionsItemSelected(MenuItem item) {
-              // Handle action bar item clicks here. The action bar will
-              // automatically handle clicks on the Home/Up button, so long
-              // as you specify a parent activity in AndroidManifest.xml.
-              int id = item.getItemId();
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objectList, ParseException e) {
+                // TODO Auto-generated method stub
+                if (!objectList.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Empty", Toast.LENGTH_SHORT).show();
 
-              //noinspection SimplifiableIfStatement
-              if (id == R.id.action_settings) {
-                  return true;
-              }
 
-              return super.onOptionsItemSelected(item);
-          }
-      }
+                    ParseObject object = objectList.get(0);
+                    // Locate the column named "ImageName" and set
+                    // the string
+                    if (object.containsKey("SenderID"))
+                    Log.d("test", "Image File Key exists");
+
+                    ParseFile fileObject = object.getParseFile("ImageFile");
+
+                    if (fileObject == null)
+                        Log.d("test", "NULL");
+                    else
+                        Log.d("test", "NOT-NULL");
+
+                    Log.d("test", fileObject.toString());
+
+                    fileObject.getDataInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+
+                            if (e == null) {
+                                Log.d("test", "We've got data in data.");
+                                // Decode the Byte[] into // Bitmap
+                                Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+                                // Get the ImageView from
+                                // main.xml
+                                ImageView image = (ImageView) findViewById(R.id.imDownloadView);
+
+                                // Set the Bitmap into the
+                                // ImageView
+                                image.setImageBitmap(bmp);
+
+                            } else {
+                                Log.d("test", "There was a problem downloading the data.");
+                            }
+                        }
+
+
+                        public void fdone(byte[] data, ParseException e) {
+                            Log.d("test", "done");
+                        }
+                    });
+
+                } else {
+                    int size = objectList.size();
+                    String StrSize = Integer.toString(size);
+                    Toast.makeText(MainActivity.this, StrSize, Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+        });
+
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}

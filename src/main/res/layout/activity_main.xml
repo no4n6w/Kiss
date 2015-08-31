@@ -6,7 +6,7 @@
     <ImageView
         android:id="@+id/imView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="300px"
         android:scaleType="fitXY"
         android:layout_gravity="center_horizontal"
         />
@@ -14,7 +14,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload"
+        android:text="Upload!!!"
         android:id="@+id/Upload" />
 
     <Button
@@ -25,6 +25,6 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="300px"
         android:id="@+id/imDownloadView" />
 </LinearLayout>
