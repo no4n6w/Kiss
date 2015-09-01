@@ -145,23 +145,9 @@ public class MainActivity extends ActionBarActivity {
             public void done(List<ParseObject> objectList, ParseException e) {
                 // TODO Auto-generated method stub
                 if (!objectList.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Empty", Toast.LENGTH_SHORT).show();
-
-
                     ParseObject object = objectList.get(0);
-                    // Locate the column named "ImageName" and set
-                    // the string
-                    if (object.containsKey("SenderID"))
-                    Log.d("test", "Image File Key exists");
 
                     ParseFile fileObject = object.getParseFile("ImageFile");
-
-                    if (fileObject == null)
-                        Log.d("test", "NULL");
-                    else
-                        Log.d("test", "NOT-NULL");
-
-                    Log.d("test", fileObject.toString());
 
                     fileObject.getDataInBackground(new GetDataCallback() {
                         @Override
@@ -180,14 +166,10 @@ public class MainActivity extends ActionBarActivity {
                                 // ImageView
                                 image.setImageBitmap(bmp);
 
+
                             } else {
                                 Log.d("test", "There was a problem downloading the data.");
                             }
-                        }
-
-
-                        public void fdone(byte[] data, ParseException e) {
-                            Log.d("test", "done");
                         }
                     });
 
@@ -195,7 +177,6 @@ public class MainActivity extends ActionBarActivity {
                     int size = objectList.size();
                     String StrSize = Integer.toString(size);
                     Toast.makeText(MainActivity.this, StrSize, Toast.LENGTH_SHORT).show();
-
                 }
             }
 

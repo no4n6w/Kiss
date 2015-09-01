@@ -7,7 +7,9 @@ buildscript {
     maven { url 'https://maven.parse.com/repo' }
   }
   dependencies {
+
     classpath 'com.parse.tools:gradle:1.+'
+
   }
 }
 
@@ -32,9 +34,10 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
-
-    compile 'com.parse.bolts:bolts-android:1.2.1'
-    compile 'com.parse:parse-android:1.10.1'
+//    compile 'com.parse.bolts:bolts-android:1.2.1'
+//    compile 'com.parse:parse-android:1.10.1'
+    compile 'com.parse.bolts:bolts-android:1.+'
+    compile fileTree(dir: 'libs', include: 'Parse-*.jar')
 }
 
 /* Uncomment if you enable ProGuard and you want to automatically upload symbols on build.
