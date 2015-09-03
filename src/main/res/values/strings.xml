@@ -15,4 +15,16 @@
 
     <string name="hello_world">Hello World!</string>
     <string name="action_settings">Settings</string>
+
+
+    <color name="white">#FFFFFF</color>
+    <string name="MY_PREFS_NAME">kiss</string>
+    <string name="sender">SENDER</string>
+    <string name="receiver">RECEIVER</string>
+    <string name="register">REGISTER</string>
+    <string name="login">LOGIN</string>
+    <string name="loginOrRegister">mode</string>
+    <string name="usersTableName">UsersTable</string>
+    <string name="id">ID</string>
+    <string name="password">Password</string>
 </resources>

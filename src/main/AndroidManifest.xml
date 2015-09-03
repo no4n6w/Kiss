@@ -42,7 +42,7 @@
             android:value="@string/parse_client_key" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.parse.starter.SplashScreen"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,6 +51,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name" >
+        </activity>
 
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.parse.ParseBroadcastReceiver">

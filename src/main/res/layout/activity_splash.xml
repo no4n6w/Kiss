@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutr"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/kisssmall" />
+
+    <LinearLayout
+        android:layout_marginTop="450dip"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+
+        android:gravity="center">
+        <Button
+            android:id="@+id/grandmaButton"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="GRANDMA"
+            android:background="#FFFFFF" />
+        <Button
+            android:id="@+id/sonButton"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="SON"
+            android:background="#FFFFFF" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="450dip"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+
+        android:gravity="center">
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+
+            android:text="LOGIN"
+            android:visibility="gone"
+            android:background="#FFFFFF" />
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="REGISTER"
+            android:visibility="gone"
+            android:background="#FFFFFF" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="450dip"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+
+        android:gravity="center">
+        <Button
+            android:id="@+id/oldGrandma"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+
+            android:text="Existing User"
+            android:visibility="gone"
+            android:background="#FFFFFF" />
+        <Button
+            android:id="@+id/newGrandma"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="New User"
+            android:visibility="gone"
+            android:background="#FFFFFF" />
+    </LinearLayout>
+
+</RelativeLayout>
+

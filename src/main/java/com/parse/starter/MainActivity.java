@@ -10,6 +10,7 @@ package com.parse.starter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -47,6 +48,9 @@ public class MainActivity extends ActionBarActivity {
 //      ParseObject testObject = new ParseObject("TestObject");
 //      testObject.put("moooo", "mar");
 //      testObject.saveInBackground();
+
+
+
       Button upload = (Button) findViewById(R.id.Upload);
       upload.setOnClickListener(new View.OnClickListener() {
           public void onClick(View arg0) {
@@ -145,7 +149,7 @@ public class MainActivity extends ActionBarActivity {
             public void done(List<ParseObject> objectList, ParseException e) {
                 // TODO Auto-generated method stub
                 if (!objectList.isEmpty()) {
-                    ParseObject object = objectList.get(0);
+                    ParseObject object = objectList.get(objectList.size()-1);
 
                     ParseFile fileObject = object.getParseFile("ImageFile");
 
