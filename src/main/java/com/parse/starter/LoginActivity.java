@@ -63,7 +63,7 @@ public class LoginActivity extends Activity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(String.valueOf(R.string.usersTableName));
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("SenderTable");
                 Log.d("test", "here1");
                 query.whereEqualTo("ID", ID.getText().toString());
                 query.findInBackground(new FindCallback<ParseObject>() {
@@ -75,25 +75,25 @@ public class LoginActivity extends Activity {
                         if ((objectList != null) && !objectList.isEmpty()) {
                             Log.d("test", "not empty");
                             ParseObject object = objectList.get(0);
-                            String parsePassword = object.getString(String.valueOf(R.string.password));
+                            String parsePassword = object.getString("Password");
                             if (parsePassword.equals(Password.getText().toString())) {
                                 Toast.makeText(LoginActivity.this, "password correct", Toast.LENGTH_SHORT).show();
                                 Toolbox.setMyID(getApplicationContext(),ID.getText().toString());
                             } else {
-                                if (mode.equals(R.string.login))
+                                if (mode.equals("LOGIN"))
                                     Toast.makeText(LoginActivity.this, "password INcorrect!!!", Toast.LENGTH_LONG).show();
-                                else if (mode.equals(R.string.register)) {
+                                else if (mode.equals("REGISTER")) {
                                     Toast.makeText(LoginActivity.this, "Occupied User Name - Please pick another one", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } else {
                             Log.d("test", "is empty");
-                            if (mode.equals(R.string.login))
+                            if (mode.equals("LOGIN"))
                                 Toast.makeText(LoginActivity.this, "No such user exist!!!", Toast.LENGTH_LONG).show();
-                            else if (mode.equals(R.string.register)) {
-                                ParseObject register = new ParseObject(getString(R.string.usersTableName));
-                                register.put(getString(R.string.id), ID.getText().toString());
-                                register.put(getString(R.string.password), Password.getText().toString());
+                            else if (mode.equals("REGISTER")) {
+                                ParseObject register = new ParseObject("SenderTable");
+                                register.put("ID", ID.getText().toString());
+                                register.put("Password", Password.getText().toString());
                                 register.saveInBackground();
                                 Toolbox.setMyID(getApplicationContext(),ID.getText().toString());
                             }

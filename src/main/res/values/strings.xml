@@ -27,4 +27,12 @@
     <string name="usersTableName">UsersTable</string>
     <string name="id">ID</string>
     <string name="password">Password</string>
+
+    <string name="title_activity_slideshow">SlideshowActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_receiver">ReceiverActivity</string>
+
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
 </resources>

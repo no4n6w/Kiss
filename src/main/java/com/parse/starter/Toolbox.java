@@ -12,6 +12,11 @@ import com.parse.starter.db.ContactsDBHelper;
 import java.util.ArrayList;
 
 
+import android.net.Uri;
+import java.io.File;
+import android.util.Log;
+
+
 /**
  * Created by Michael on 9/3/2015.
  */
@@ -67,4 +72,31 @@ public class Toolbox{
         editor.putString("MyUserType", userType);
         return editor.commit();
     }
+
+    ////////////////////////
+    public static Uri getImageUri(String path) {
+        return Uri.fromFile(new File(path));
+    }
+
+    private static final String TAG = "ImageZoomCrop";
+
+    public static void e(Throwable e){
+        Log.e(TAG,e.getMessage(),e);
+    }
+
+    public static void e(String msg){
+        Log.e(TAG,msg);
+    }
+
+    public interface IntentExtras{
+        String ACTION_CAMERA = "action-camera";
+        String ACTION_GALLERY = "action-gallery";
+        String IMAGE_PATH = "image-path";
+    }
+
+    public interface PicModes{
+        String CAMERA = "Camera";
+        String GALLERY = "Gallery";
+    }
+
 }

@@ -3,18 +3,18 @@
     android:fillEnabled="true"
     android:fillAfter="true" >
 
-    <alpha android:fromAlpha="0.0" android:toAlpha="1.0"
-        android:interpolator="@android:anim/accelerate_interpolator"
-        android:duration="2000"
+    <!--<alpha android:fromAlpha="0.0" android:toAlpha="1.0"-->
+        <!--android:interpolator="@android:anim/accelerate_interpolator"-->
+        <!--android:duration="2000"-->
 
-        android:fillAfter="true"/>
+        <!--android:fillAfter="true"/>-->
 
     <translate
         android:interpolator="@android:anim/linear_interpolator"
-        android:fromYDelta="0%p"
-        android:toYDelta="-20%p"
-        android:duration="2500"
-        android:startOffset="0"
+        android:fromYDelta="-200%p"
+        android:toYDelta="-2%p"
+        android:duration="3000"
+        android:startOffset="1000"
         android:repeatCount="0"
         ></translate>
 </set>
