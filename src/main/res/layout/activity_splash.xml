@@ -18,7 +18,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dip"
+        android:layout_marginTop="150dip"
         android:padding="10dp"
         >
 
@@ -79,20 +79,17 @@
             android:password="true"
             android:drawableLeft="@drawable/password"
             android:alpha="0.8"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
+
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
                 android:textColor="#F00"
                 android:layout_gravity="center_vertical"
                 android:textStyle="bold"
                 android:id="@+id/loginText"
                 android:layout_weight="1.03"
-                android:password="false" />
+                android:password="false"
+                android:textSize="18sp"/>
 
             <Button
                 android:id="@+id/btnGo"
@@ -103,7 +100,7 @@
                 android:text="Sign In"
                 android:alpha="0.8"
                 />
-            </LinearLayout>
+
 
         <Button
             android:id="@+id/registerBut"

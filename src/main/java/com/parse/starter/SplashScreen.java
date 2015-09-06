@@ -3,57 +3,30 @@ package com.parse.starter;
 /**
  * Created by Michael on 9/2/2015.
  */
+
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.view.View.OnClickListener;
 
+import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
-import com.parse.ParseObject;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import com.parse.ParseException;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.parse.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.List;
-
-import org.w3c.dom.Text;
+import com.parse.starter.profileimage.ImageViewActivity;
 
 public class SplashScreen extends Activity {
 
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 4800;
-    private PowerManager.WakeLock mWakeLock;
+    private static int SPLASH_TIME_OUT = 4000;
     public String userMode = "SENDER";
     public EditText mPasswordField;
     public EditText mUsernameField;
@@ -63,12 +36,12 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "My Tag");
-        mWakeLock.acquire();
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
-       GifView gifView = (GifView)findViewById(R.id.gifview);
+
+            Log.d("test", "Not null");
+        GifView gifView = (GifView) findViewById(R.id.gifview);
 //
+
 //        String stringInfo = "";
 //        stringInfo += "Duration: " + gifView.getMovieDuration() + "\n";
 //        stringInfo += "W x H: "
@@ -78,7 +51,7 @@ public class SplashScreen extends Activity {
 
 //        final ImageView sonButton = (ImageView) findViewById(R.id.sonButton);
 //        final ImageView grandmaButton = (ImageView) findViewById(R.id.grandmaButton);
-       Animation kissTranslate = AnimationUtils.loadAnimation(this,R.anim.translatekiss);
+        Animation kissTranslate = AnimationUtils.loadAnimation(this, R.anim.translatekiss);
         gifView.startAnimation(kissTranslate);
         final Button butGo = (Button) findViewById(R.id.btnGo);
         mUsernameField = (EditText) findViewById(R.id.etUserName);
@@ -88,8 +61,10 @@ public class SplashScreen extends Activity {
         final Button regBut = (Button) findViewById(R.id.registerBut);
         etTextLogin = (TextView) findViewById(R.id.loginText);
 
+//        if (!ParseUser.getCurrentUser().isAuthenticated()){
 
-        if (Toolbox.getMyID(getApplicationContext()) == null) {
+
+//        if (ParseUser.getCurrentUser().getEmail() == null) {
             Animation buttonsAppear = AnimationUtils.loadAnimation(this, R.anim.buttonsappear);
 
 
@@ -99,128 +74,154 @@ public class SplashScreen extends Activity {
             recBut.startAnimation(buttonsAppear);
             sendBut.startAnimation(buttonsAppear);
             regBut.startAnimation(buttonsAppear);
-        }
+//        } else {
+//            Log.d("test","whattttt");
+//            new Handler().postDelayed(new Runnable() {
+//
+//            /*
+//             * Showing splash screen with a timer. This will be useful when you
+//             * want to show case your app logo / company
+//             */
+//
+//                @Override
+//                public void run() {
+//                    // This method will be executed once the timer is over
+//                    // Start your app main activity
+//
+//
+//                    Intent i = new Intent(SplashScreen.this, ReceiverActivity.class);
+//                    startActivity(i);
+//
+//                    // close this activity
+//                    finish();
+//                }
+//            }, SPLASH_TIME_OUT);
+//
+//            Log.d("test", Toolbox.getMyID(getApplicationContext()));
+//        }
 
-        recBut.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPasswordField.clearAnimation();
-                regBut.clearAnimation();
-                recBut.setBackgroundColor(0xfffbfffb);
-                sendBut.setBackgroundColor(0xffb7bbbe);
-                butGo.setText("Got it!");
-                regBut.setVisibility(View.GONE);
-                mPasswordField.setVisibility(View.GONE);
+            recBut.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mPasswordField.clearAnimation();
+                    regBut.clearAnimation();
+                    recBut.setBackgroundColor(0xfffbfffb);
+                    sendBut.setBackgroundColor(0xffb7bbbe);
+                    butGo.setText("Got it!");
+                    regBut.setVisibility(View.GONE);
+                    mPasswordField.setVisibility(View.GONE);
 
-                mUsernameField.setText("Your personal code is:\n9473djfkGSR");
-                mUsernameField.setEnabled(false);
-                userMode = "RECEIVER";
-            }
-        });
-
-        sendBut.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendBut.setBackgroundColor(0xfffbfffb);
-                recBut.setBackgroundColor(0xffb7bbbe);
-                butGo.setText("Sign In");
-                mPasswordField.setVisibility(View.VISIBLE);
-                regBut.setVisibility(View.VISIBLE);
-                mPasswordField.setHint("Password");
-                mUsernameField.setEnabled(true);
-                mUsernameField.setText("");
-                userMode = "SENDER";
-
-            }
-        });
-
-        regBut.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mUsernameField.getText().length() == 0 || mPasswordField.getText().length() == 0) {
-                    etTextLogin.setText("No details where entered");
-                    return;
+                    mUsernameField.setText("Your personal code is:\n9473djfkGSR");
+                    mUsernameField.setEnabled(false);
+                    userMode = "RECEIVER";
                 }
+            });
 
-                ParseUser user = new ParseUser();
-                user.setEmail(mUsernameField.getText().toString());
-                user.setUsername(mUsernameField.getText().toString());
-                user.setPassword(mPasswordField.getText().toString());
-                etTextLogin.setText("");
-                user.signUpInBackground(new SignUpCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            etTextLogin.setText("We have sent you a verificatio email\n" +
-                                    "Please confirm your email and Sign In");
-                            mPasswordField.setText("");
-                        } else {
+            sendBut.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendBut.setBackgroundColor(0xfffbfffb);
+                    recBut.setBackgroundColor(0xffb7bbbe);
+                    butGo.setText("Sign In");
+                    mPasswordField.setVisibility(View.VISIBLE);
+                    regBut.setVisibility(View.VISIBLE);
+                    mPasswordField.setHint("Password");
+                    mUsernameField.setEnabled(true);
+                    mUsernameField.setText("");
+                    userMode = "SENDER";
 
-                            // Sign up didn't succeed. Look at the ParseException
-                            // to figure out what went wrong
-                            switch(e.getCode()){
-                                case ParseException.EMAIL_TAKEN:
-                                    etTextLogin.setText("Sorry, this email is already registered");
-                                    break;
-                                case ParseException.INVALID_EMAIL_ADDRESS:
-                                    etTextLogin.setText("Sorry, this is an invalid email");
-                                    break;
-                                case ParseException.PASSWORD_MISSING:
-                                    etTextLogin.setText("Sorry, you must supply a password to register.");
-                                    break;
-                                default:
-                                    etTextLogin.setText("Something went wrong, please try again");
+                }
+            });
 
+            regBut.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mUsernameField.getText().length() == 0 || mPasswordField.getText().length() == 0) {
+                        etTextLogin.setText("No details where entered");
+                        return;
+                    }
+
+                    ParseUser user = new ParseUser();
+                    user.setEmail(mUsernameField.getText().toString());
+                    user.setUsername(mUsernameField.getText().toString());
+                    user.setPassword(mPasswordField.getText().toString());
+                    etTextLogin.setText("");
+                    user.signUpInBackground(new SignUpCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                etTextLogin.setText("We have sent you a verification email. " +
+                                        "Please confirm your email and Sign In!");
+                                mPasswordField.setText("");
+                                regBut.setVisibility(View.GONE);
+                            } else {
+
+                                // Sign up didn't succeed. Look at the ParseException
+                                // to figure out what went wrong
+                                switch (e.getCode()) {
+                                    case ParseException.EMAIL_TAKEN:
+                                        etTextLogin.setText("Sorry, this email is already registered");
+                                        break;
+                                    case ParseException.INVALID_EMAIL_ADDRESS:
+                                        etTextLogin.setText("Sorry, this is an invalid email");
+                                        break;
+                                    case ParseException.PASSWORD_MISSING:
+                                        etTextLogin.setText("Sorry, you must supply a password to register.");
+                                        break;
+                                    default:
+                                        etTextLogin.setText("Something went wrong, please try again" + e.toString());
+
+                                }
                             }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
 //            user.setUsername(mUsernameField.getText().toString());
 //            user.setPassword(mPasswordField.getText().toString());
-        });
+            });
 
-        butGo.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logInInBackground(mUsernameField.getText().toString(), mPasswordField.getText().toString(), new LogInCallback() {
-                    @Override
-                    public void done(ParseUser user, ParseException e) {
-                        if (user != null) {
-                            if (!user.isAuthenticated()){
-                                etTextLogin.setText("email is not verified\n" +
-                                        "Please enter your email and verify it");
-                                user.setEmail(mUsernameField.getText().toString());
+            butGo.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ParseUser.logInInBackground(mUsernameField.getText().toString(), mPasswordField.getText().toString(), new LogInCallback() {
+                        @Override
+                        public void done(ParseUser user, ParseException e) {
+                            if (user != null) {
+                                if (!user.isAuthenticated()) {
+                                    etTextLogin.setText("email is not yet verified. " +
+                                            "Please check your email box");
+                                    user.setEmail(mUsernameField.getText().toString());
+                                } else {
+                                    ///////////////// SUCCESSSSSSSSSSSSSSSSSSSSSSSSS
+                                    etTextLogin.setText("");
+                                    Toolbox.setMyUserType(getApplicationContext(),userMode);
+                                    Log.d("test", "reached here");
+                                        Intent intent = new Intent(SplashScreen.this, ImageViewActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                }
                             } else {
-                                etTextLogin.setText("great");
-//                                Intent intent = new Intent(SplashScreen.this, SetProfileActivity.class);
-//                                startActivity(intent);
-//                                finish();
-                            }
-                        } else {
-                            // Signup failed. Look at the ParseException to see what happened.
-                            switch(e.getCode()){
-                                case ParseException.USERNAME_MISSING:
-                                    etTextLogin.setText("Sorry, you must supply an email to Sign In");
-                                    break;
-                                case ParseException.PASSWORD_MISSING:
-                                    etTextLogin.setText("Sorry, you must supply a password to register.");
-                                    break;
-                                case ParseException.OBJECT_NOT_FOUND:
-                                    etTextLogin.setText("Sorry, those credentials were invalid.");
-                                    break;
-                                default:
-                                    etTextLogin.setText(e.toString());
-                                    break;
+                                // Signup failed. Look at the ParseException to see what happened.
+                                switch (e.getCode()) {
+                                    case ParseException.USERNAME_MISSING:
+                                        etTextLogin.setText("Sorry, you must supply an email to Sign In");
+                                        break;
+                                    case ParseException.PASSWORD_MISSING:
+                                        etTextLogin.setText("Sorry, you must supply a password to register.");
+                                        break;
+                                    case ParseException.OBJECT_NOT_FOUND:
+                                        etTextLogin.setText("Sorry, those credentials were invalid.");
+                                        break;
+                                    default:
+                                        etTextLogin.setText(e.toString());
+                                        break;
+                                }
                             }
                         }
-                    }
-                });
-            }
-        });
-
-
+                    });
+                }
+            });
 
 
 //
@@ -282,6 +283,16 @@ public class SplashScreen extends Activity {
 //
 //
 //        } else {
+//
+//            butGo.clearAnimation();
+//            butGo.setVisibility(View.GONE);
+//            mUsernameField.setVisibility(View.GONE);
+//            mPasswordField.setVisibility(View.GONE);
+//            recBut.setVisibility(View.GONE);
+//            sendBut.setVisibility(View.GONE);
+//            regBut.setVisibility(View.GONE);
+//            etTextLogin.setVisibility(View.GONE);
+//
 //            new Handler().postDelayed(new Runnable() {
 //
 //            /*
@@ -295,7 +306,7 @@ public class SplashScreen extends Activity {
 //                    // Start your app main activity
 //
 //
-//                    Intent i = new Intent(SplashScreen.this, ReceiverActivity.class);
+//                    Intent i = new Intent(SplashScreen.this, SenderActivity.class);
 //                    startActivity(i);
 //
 //                    // close this activity
@@ -305,17 +316,12 @@ public class SplashScreen extends Activity {
 //
 //            Log.d("test", Toolbox.getMyID(getApplicationContext()));
 //        }
+////
+////
 //
 //
-
+//        }
 
 
     }
-
-    @Override
-    protected void onStop() {
-        mWakeLock.release();
-        super.onStop();
     }
-
-}
