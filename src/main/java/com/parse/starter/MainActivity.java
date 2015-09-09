@@ -13,42 +13,52 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.starter.profileimage.ImageViewActivity;
 
 public class MainActivity extends Activity {
-
+   public  Intent intentView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intentView;
 
-        if (ParseUser.getCurrentUser().getEmail() == null) {
-            Log.d("test", "null, email is null");
-            intentView = new Intent(MainActivity.this, SplashScreen.class);
-            startActivity(intentView);
-            finish();
-        } else {
-
-            if (!ParseUser.getCurrentUser().isAuthenticated()) {
-                if (Toolbox.getMyUserType(getApplicationContext()) == "RECEIVER") {
-                    intentView = new Intent(MainActivity.this, ReceiverActivity.class);
-                } else {
+        ParseUser.getCurrentUser().fetchInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (ParseUser.getCurrentUser().getEmail() == null) {
+                    Log.d("test", "No email registered");
                     intentView = new Intent(MainActivity.this, SplashScreen.class);
-                }
-
-            } else {
-                Log.d("test", "hiiiiiii");
-                if (ParseUser.getCurrentUser().get("nick") == null) {
-                    intentView = new Intent(MainActivity.this, ImageViewActivity.class);
+                    startActivity(intentView);
+                    finish();
                 } else {
-                    intentView = new Intent(MainActivity.this, SenderActivity.class);
+
+                    if (!(Boolean)ParseUser.getCurrentUser().get("emailVerified")) {
+                        if (Toolbox.isReceiver(getApplicationContext())) {
+                            Log.d("test", "A receiver entered");
+                            intentView = new Intent(MainActivity.this, ReceiverActivity.class);
+                        } else {
+                            Log.d("test", "A sender sent to verify email");
+                            intentView = new Intent(MainActivity.this, SplashScreen.class);
+                        }
+                    } else {
+                        if (ParseUser.getCurrentUser().get("nick") == null) {
+                            Log.d("test", "A sender which has a verified email but no profile");
+                            intentView = new Intent(MainActivity.this, ImageViewActivity.class);
+                        } else {
+                            Log.d("test", "A sender, just a regular sender");
+                            intentView = new Intent(MainActivity.this, SenderActivity.class);
+                        }
+                    }
+
+                    startActivity(intentView);
+                    finish();
                 }
             }
+        });
 
-            startActivity(intentView);
-            finish();
-        }
     }
 }
 //

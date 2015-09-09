@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 import com.parse.starter.profileimage.ImageViewActivity;
@@ -31,7 +32,7 @@ public class SplashScreen extends Activity {
     public EditText mPasswordField;
     public EditText mUsernameField;
     public TextView etTextLogin;
-
+    public String id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +41,10 @@ public class SplashScreen extends Activity {
 
             Log.d("test", "Not null");
         GifView gifView = (GifView) findViewById(R.id.gifview);
-//
+
+        ParseInstallation parseinst = ParseInstallation.getCurrentInstallation();
+        id = parseinst.getInstallationId();
+        id = id.substring(id.lastIndexOf("-") + 1, id.length());
 
 //        String stringInfo = "";
 //        stringInfo += "Duration: " + gifView.getMovieDuration() + "\n";
@@ -61,7 +65,6 @@ public class SplashScreen extends Activity {
         final Button regBut = (Button) findViewById(R.id.registerBut);
         etTextLogin = (TextView) findViewById(R.id.loginText);
 
-//        if (!ParseUser.getCurrentUser().isAuthenticated()){
 
 
 //        if (ParseUser.getCurrentUser().getEmail() == null) {
@@ -111,7 +114,7 @@ public class SplashScreen extends Activity {
                     regBut.setVisibility(View.GONE);
                     mPasswordField.setVisibility(View.GONE);
 
-                    mUsernameField.setText("Your personal code is:\n9473djfkGSR");
+                    mUsernameField.setText("Your personal code is:\n" + id);
                     mUsernameField.setEnabled(false);
                     userMode = "RECEIVER";
                 }
@@ -169,7 +172,7 @@ public class SplashScreen extends Activity {
                                         etTextLogin.setText("Sorry, you must supply a password to register.");
                                         break;
                                     default:
-                                        etTextLogin.setText("Something went wrong, please try again" + e.toString());
+                                        etTextLogin.setText("Something went wrong, please try again");
 
                                 }
                             }
@@ -184,42 +187,74 @@ public class SplashScreen extends Activity {
             butGo.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ParseUser.logInInBackground(mUsernameField.getText().toString(), mPasswordField.getText().toString(), new LogInCallback() {
-                        @Override
-                        public void done(ParseUser user, ParseException e) {
-                            if (user != null) {
-                                if (!user.isAuthenticated()) {
-                                    etTextLogin.setText("email is not yet verified. " +
-                                            "Please check your email box");
-                                    user.setEmail(mUsernameField.getText().toString());
+                    if (userMode.equalsIgnoreCase("RECEIVER")) {
+
+
+                        Toolbox.setMyUserType(getApplicationContext(),userMode);
+                        Toolbox.setMyID(getApplicationContext(),id);
+                        ParseUser user = new ParseUser();
+                        user.setEmail(id + "@kiss.com");
+                        user.setUsername(id);
+                        user.setPassword(id);
+                        etTextLogin.setText("");
+                        user.signUpInBackground(new SignUpCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    Intent intent = new Intent(SplashScreen.this, ReceiverActivity.class);
+                                    startActivity(intent);
+                                    finish();
                                 } else {
-                                    ///////////////// SUCCESSSSSSSSSSSSSSSSSSSSSSSSS
-                                    etTextLogin.setText("");
-                                    Toolbox.setMyUserType(getApplicationContext(),userMode);
-                                    Log.d("test", "reached here");
+
+                                    // Sign up didn't succeed. Look at the ParseException
+                                    // to figure out what went wrong
+                                    switch (e.getCode()) {
+                                        default:
+                                            etTextLogin.setText("Something went wrong, please try again");
+                                    }
+                                }
+                            }
+                        });
+                        return;
+                    } else { // User is a SENDER
+
+                        ParseUser.logInInBackground(mUsernameField.getText().toString(), mPasswordField.getText().toString(), new LogInCallback() {
+                            @Override
+                            public void done(ParseUser user, ParseException e) {
+                                if (user != null) {
+                                    if (!user.isAuthenticated()) {
+                                        etTextLogin.setText("email is not yet verified. " +
+                                                "Please check your email box");
+                                        user.setEmail(mUsernameField.getText().toString());
+                                    } else {
+                                        ///////////////// SUCCESSSSSSSSSSSSSSSSSSSSSSSSS
+                                        etTextLogin.setText("");
+                                        Toolbox.setMyUserType(getApplicationContext(), userMode);
+                                        Log.d("test", "reached here");
                                         Intent intent = new Intent(SplashScreen.this, ImageViewActivity.class);
                                         startActivity(intent);
                                         finish();
-                                }
-                            } else {
-                                // Signup failed. Look at the ParseException to see what happened.
-                                switch (e.getCode()) {
-                                    case ParseException.USERNAME_MISSING:
-                                        etTextLogin.setText("Sorry, you must supply an email to Sign In");
-                                        break;
-                                    case ParseException.PASSWORD_MISSING:
-                                        etTextLogin.setText("Sorry, you must supply a password to register.");
-                                        break;
-                                    case ParseException.OBJECT_NOT_FOUND:
-                                        etTextLogin.setText("Sorry, those credentials were invalid.");
-                                        break;
-                                    default:
-                                        etTextLogin.setText(e.toString());
-                                        break;
+                                    }
+                                } else {
+                                    // Signup failed. Look at the ParseException to see what happened.
+                                    switch (e.getCode()) {
+                                        case ParseException.USERNAME_MISSING:
+                                            etTextLogin.setText("Sorry, you must supply an email to Sign In");
+                                            break;
+                                        case ParseException.PASSWORD_MISSING:
+                                            etTextLogin.setText("Sorry, you must supply a password to register.");
+                                            break;
+                                        case ParseException.OBJECT_NOT_FOUND:
+                                            etTextLogin.setText("Sorry, those credentials were invalid.");
+                                            break;
+                                        default:
+                                            etTextLogin.setText(e.toString());
+                                            break;
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             });
 

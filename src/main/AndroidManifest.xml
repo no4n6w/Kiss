@@ -43,8 +43,8 @@
     <application
         android:name=".StarterApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@drawable/kissicon"
+        android:label="KISS"
         android:theme="@android:style/Theme.NoTitleBar" >
         <meta-data
             android:name="com.parse.APPLICATION_ID"
@@ -103,7 +103,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.parse.ParsePushBroadcastReceiver"
+            android:name="com.parse.starter.PushReceiver"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
@@ -111,6 +111,16 @@
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
+
+        <!--<receiver-->
+            <!--android:name="com.parse.ParsePushBroadcastReceiver"-->
+            <!--android:exported="false" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.parse.push.intent.RECEIVE" />-->
+                <!--<action android:name="com.parse.push.intent.DELETE" />-->
+                <!--<action android:name="com.parse.push.intent.OPEN" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
         <receiver
             android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -138,6 +148,7 @@
         <activity
             android:name=".BlankTestActivity"
             android:label="@string/title_activity_blank_test" >
+
         </activity>
     </application>
 

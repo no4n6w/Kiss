@@ -1,31 +1,21 @@
 package com.parse.starter;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.starter.util.SystemUiHider;
-
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParsePush;
+import com.parse.ParseUser;
+import com.parse.starter.util.SystemUiHider;
+
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -37,13 +27,38 @@ import java.util.List;
 public class ReceiverActivity extends Activity{
 
     SQLiteDatabase sqlDB;
+    String myID;
+    String channel;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receiver);
-        sqlDB = Toolbox.initializeDB(getApplicationContext());
-        ArrayList<String> contacts = Toolbox.getMyContacts(sqlDB);
+        TextView idText = (TextView) findViewById(R.id.idView);
+        idText.setText("ID: "+ParseUser.getCurrentUser().getUsername().toString());
+        Log.d("test", "how are we doing?");
+        myID = ParseUser.getCurrentUser().getUsername().toString();
+        channel = "id"+myID;
+        ParsePush.subscribeInBackground(channel);
+//        ,new SaveCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                if (e == null) {
+//                    Log.d("test", "successfully subscribed to the broadcast channel with "+channel);
+//                } else {
+//                    Log.e("test", " failed to subscribe for push "+channel, e);
+//                }
+//            }
+//        });
+//        sqlDB = Toolbox.initializeDB(getApplicationContext());
+//        ArrayList<String> contacts = Toolbox.getMyContacts(sqlDB);
+        if (!Toolbox.hasContacts())
 
+            return;
+        ArrayList<String> contacts = Toolbox.getMyParseContacts();
+
+//         Toast.makeText(ReceiverActivity.this, contacts.get(0).toString() + " of size " + Integer.toString(contacts.size()), Toast.LENGTH_LONG).show();
         final ListView lv1 = (ListView) findViewById(R.id.listV_main);
         lv1.setAdapter(new ItemListBaseAdapter(this, contacts));
 

@@ -57,6 +57,8 @@ public class ImageViewActivity extends Activity implements PicModeSelectDialogFr
         if (ParseUser.getCurrentUser().get("nick") != null)
             nickname.setText(ParseUser.getCurrentUser().get("nick").toString());
 
+        if (ParseUser.getCurrentUser().get("ProfileImageFile") != null)
+            profileImage.setImageBitmap(Toolbox.getProfilePic(ParseUser.getCurrentUser().getEmail().toString(), getApplicationContext()));
 
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
